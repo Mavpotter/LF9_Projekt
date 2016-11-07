@@ -1,0 +1,63 @@
+CREATE DATABASE IF NOT EXISTS IT-Geraete-Verwaltung;
+
+USE IT-Geraete-Verwaltung;
+
+CREATE TABLE Mitarbeiter
+(
+	P_Personalnummer INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	Vorname VARCHAR(255),
+	Nachname VARCHAR(255),
+	Geschlecht CHAR(1),
+	PRIMARY KEY (P_Personalnummer)
+);
+
+CREATE TABLE Raum
+(
+	P_Raumnummer INT UNSIGNED NOT NULL,
+	Zweck VARCHAR(255) NOT NULL,
+	Platzanzahl INT UNSIGNED,
+	PRIMARY KEY (P_Raumnummer)
+);
+
+CREATE TABLE Netzwerkkarte
+(
+	P_MAC VARCHAR(17) NOT NULL,
+	Uebertragungsrate INT UNSIGNED NOT NULL,
+	PRIMARY KEY (P_MAC)
+);
+
+CREATE TABLE Geraet
+(
+	P_Inventarnummer INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	Seriennummer VARCHAR(255) UNSIGNED NOT NULL,
+	Art VARCHAR(255) NOT NULL,
+	Preis DECIMAL(10,2) UNSIGNED NOT NULL,
+	Anschaffungsdatum DATE NOT NULL,
+	F_Raumnummer INT UNSIGNED NOT NULL,
+	FOREIGN KEY (F_Raumnummer) REFERENCES Raum(Raumnummer),
+	PRIMARY KEY (P_Inventarnummer)
+);
+
+CREATE TABLE Netzwerkeinstellungen
+(
+	P_F_MAC VARCHAR(255) NOT NULL,
+	F_Inventarnummer INT UNSIGNED NOT NULL,
+	IP VARCHAR(39) NOT NULL,
+	DNS VARCHAR(39) NOT NULL,
+	Netzwerkmaske VARCHAR(15),
+	PRIMARY KEY (P_F_MAC),
+	FOREIGN KEY (P_F_MAC) REFERENCES Netzwerkkarte(P_MAC),
+	FOREIGN KEY (F_Inventarnummer) REFERENCES Geraet(P_Inventarnummer)
+);
+
+CREATE TABLE Wartung
+(
+	P_Wartungs_ID INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	F_Personalnummer INT UNSIGNED NOT NULL,
+	F_Inventarnummer INT UNSIGNED NOT NULL,
+	Wartungsarbeit TEXT NOT NULL,
+	Datum DATE NOT NULL,
+	PRIMARY KEY (P_Wartungs_ID),
+	FOREIGN KEY (F_Personalnummer) REFERENCES Mitarbeiter(P_Personalnummer),
+	FOREIGN KEY (F_Inventarnummer) REFERENCES Geraet(P_Inventarnummer)
+);
